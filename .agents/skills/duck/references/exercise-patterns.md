@@ -1,0 +1,182 @@
+# Exercise Patterns & Techniques
+
+Practical patterns for running effective duck sessions. The main SKILL.md defines WHEN to use each mode — this file covers HOW to execute exercises within those modes.
+
+Adapted from [learning-opportunities](https://github.com/DrCatHicks/learning-opportunities) by Dr. Cat Hicks.
+Licensed under [CC-BY-4.0](https://creativecommons.org/licenses/by/4.0/). Original authors: Cat Hicks, Carol Lee, Kristen Foster-Marks.
+
+---
+
+## Hands-on Code Exploration
+
+**Prefer directing users to files over showing code snippets.** Having learners locate code themselves builds codebase familiarity and creates stronger memory traces than passively reading.
+
+### Completion-style Prompts
+
+Give enough context to orient, but have them find the key piece:
+
+> Open `[file]` and find the `[component]`. What does it do with `[variable]`?
+
+### Fading Scaffolding
+
+Adjust guidance based on demonstrated familiarity:
+
+- **Early:** "Open `[file]`, scroll to around line `[N]`, and find the `[function]`"
+- **Later:** "Find where we handle `[feature]`"
+- **Eventually:** "Where would you look to change how `[feature]` works?"
+
+Fading adjusts the difficulty of the *question setup*, not the *answer*. At every level, the learner still generates the answer themselves. If they're struggling, move back UP the ladder (more specific question) rather than hinting at the answer.
+
+### Pair Finding
+
+After they locate code, have them find a parallel:
+
+> We just looked at how `[function A]` handles `[task]`. Can you find another function that does something similar?
+
+### Example-Problem Pairs
+
+After exploring one instance, have them apply the pattern:
+
+> We just saw how `[module A]` implements `[pattern]`. Now open `[module B]` — how would you apply the same approach there?
+
+### When to Show Code Directly
+
+Only show code snippets when:
+- The snippet is very short (1-3 lines) and full context isn't needed
+- Introducing new syntax they haven't encountered
+- The file is large and searching would be frustrating rather than educational
+- They're stuck and need to move forward
+
+In all other cases, direct them to the file.
+
+---
+
+## Exercise Execution Patterns
+
+### Prediction > Observation > Reflection
+
+Best for: understanding behavior, exposing mental model gaps.
+
+1. **Pause:** "What do you predict will happen when [specific scenario]?"
+2. Wait for response
+3. Walk through actual behavior together
+4. **Pause:** "What surprised you? What matched your expectations?"
+
+### Generation > Comparison
+
+Best for: PR review, comparing approaches, understanding trade-offs.
+
+1. **Pause:** "Before I show you how [X] was implemented, sketch out how you'd approach it"
+2. Wait for response
+3. Show the actual implementation
+4. **Pause:** "What's similar? What's different, and why do you think it went this direction?"
+
+### Trace the Path
+
+Best for: understanding data/request flow, integration points.
+
+1. Set up a concrete scenario with specific values
+2. **Pause at each decision point:** "The request hits [component] now. What happens next?"
+3. Wait before revealing each step
+4. Continue through the full path
+
+### Debug This
+
+Best for: code verification, testing understanding of edge cases.
+
+1. Present a plausible bug or edge case from the actual code
+2. **Pause:** "What would go wrong here, and why?"
+3. Wait for response
+4. **Pause:** "How would you fix it?"
+5. Discuss their approach
+
+### Teach It Back
+
+Best for: PR review, verifying deep understanding.
+
+1. **Pause:** "Explain how [component] works as if I'm a new developer joining the project"
+2. Wait for their explanation
+3. Offer targeted feedback: what they nailed, what to refine
+4. Do not attribute insight they didn't express — if they described WHAT but not WHY, acknowledge the what without crediting causal understanding
+
+### Retrieval Check-in
+
+Best for: session start on ongoing projects, spacing effect.
+
+1. **Pause:** "Quick check — what do you remember about how [previous component] handles [scenario]?"
+2. Wait for response
+3. Fill gaps or confirm, then proceed with the session
+
+Use this at the start of new sessions on ongoing projects. It activates spaced retrieval — the brain reconstructs knowledge, strengthening long-term memory.
+
+---
+
+## Techniques to Weave Into Any Mode
+
+### Elaborative Interrogation
+
+Ask "why", "how", and "when else" questions:
+- "Why did we structure it this way rather than [alternative]?"
+- "How would this behave differently if [condition changed]?"
+- "In what context might [alternative] be a better choice?"
+
+### Interleaving
+
+Mix concepts rather than drilling one:
+- "Which of these three recent changes would be affected if we modified [X]?"
+- Don't ask five questions about the same function — spread across different components.
+
+### Varied Practice Contexts
+
+Apply the same concept in different scenarios:
+- "We used this pattern for user auth — how would you apply it to API key validation?"
+- "This error handling approach works here. Where else in the codebase would it help?"
+
+### Concrete-to-Abstract Bridging
+
+After hands-on work, transfer to broader contexts:
+- "This is an example of [pattern]. Where else might you use this approach?"
+- "What's the general principle here that you could apply to other projects?"
+
+### Error Analysis
+
+Examine mistakes and edge cases deliberately:
+- "Here's a bug someone might accidentally introduce — what would go wrong and why?"
+- Base scenarios on real patterns from the code, not contrived examples.
+
+---
+
+## Pair Finding with Explaining
+
+After they locate code, prompt self-explanation before moving on:
+
+> You found it. Before I say anything — what do you think this line does?
+
+This combines the benefit of active code navigation (stronger memory traces) with self-explanation (deeper processing). Never skip the explanation step — finding code without understanding it just creates an illusion of familiarity.
+
+---
+
+## Hint Ladder (When the User Is Stuck)
+
+Use when the user says "막혔어", "모르겠어", "hint please", goes silent for 30+ seconds after a question, or explicitly asks for help.
+
+The rule that separates duck hints from ordinary hints: **hints shrink the *search space*, not the *answer*.** At every rung you still make the user produce the insight themselves; you just narrow where they're looking.
+
+Start at the lowest useful rung. Climb only if the current rung doesn't unblock them.
+
+| Rung | What you give | What it looks like |
+|------|---------------|--------------------|
+| **L0. Reframe** | Same question, narrower scope. | "전체 파일 말고 `initHandler` 함수만 봐. 거기서 네가 이해 안 되는 라인을 하나만 골라봐." |
+| **L1. Location** | File path (or directory). No function name. | "`src/auth/session.ts` 근처에서 찾아봐." |
+| **L2. Symbol** | Function/class/variable name. | "`validateSession`에 단서 있어." |
+| **L3. One-word category** | The *kind* of problem, not the fix. | "타이밍 문제야." / "타입 좁히는 지점이야." / "비동기 경쟁이야." |
+| **L4. Structural hint** | Shape of the failure mode — still no code. | "비동기 경쟁인데, 두 호출 중 하나가 `await` 없이 나가서 순서가 깨져. 어느 호출일지 찾아봐." |
+
+**Forbidden at every rung:**
+- Showing code (even 2-3 lines).
+- Stating the final answer in words ("그냥 `await` 붙이면 돼").
+- Listing *all* candidates ("이 세 줄 중 하나야").
+
+**If L4 doesn't unblock them**, that's not a cue to give the answer. It's a signal the exercise is above their current level for this session. Say so honestly: "여기서 더 가면 학습 안 되고 내가 답 알려주는 꼴이야. 오늘은 여기까지 하고, 다음 번에 [구체적 선행 학습 제안]부터 보는 게 낫겠어." Then stop.
+
+**Why the ladder works**: each rung preserves the predict-before-observe cycle that builds procedural memory. Revealing the answer at any rung collapses that cycle and degrades the exercise into AI-assisted reading.
