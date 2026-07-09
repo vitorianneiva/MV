@@ -1,6 +1,6 @@
 ---
 name: codex-review
-description: "Run Codex code review with Claude's independent double-check. Use when asked \"codex review\", \"codex 리뷰\", or wants Codex to review code changes. For adversarial review use /codex-adversarial."
+description: "Run Codex code review with Claude's independent double-check. Use when asked \"codex review\", \"review my code with codex\", or wants Codex to review code changes. For adversarial review use /codex-adversarial."
 argument-hint: "[--base BRANCH] [--scope auto|working-tree|branch] [--model SLUG] [--effort LEVEL]"
 allowed-tools: ["Bash", "BashOutput", "KillShell", "Read", "Grep", "Glob", "AskUserQuestion"]
 ---
@@ -27,7 +27,7 @@ what Codex returns, without biasing yourself by reading the diff first.
 
 The companion collects the diff and context itself. Your value-add is
 the double-check, not pre-analysis. Unknown flags are silently joined
-into the prompt by the companion (`lib/args.mjs:47-49` + `:613-619`) —
+into the prompt by the companion (`lib/args.mjs:47-49` + `:643-650`) —
 there is NO post-hoc detection. Phase 1 whitelist is the only safety net.
 
 ---
@@ -39,12 +39,12 @@ You are a translator. Use LM intelligence, not regex tables.
 **Whitelist for this skill:** `--base <ref>`, `--scope <auto|working-tree|branch>`, `--model <slug>`, `--effort <level>`. Nothing else.
 
 `--model` and `--effort` route through `scripts/apply-codex-config.py` to update `~/.codex/config.toml` *before* the companion launches — see the Apply block below. Two reasons:
-1. **`--effort` is not a registered review flag** (`handleReviewCommand` `valueOptions = ["base", "scope", "model", "cwd"]` at `:684`). Passing `--effort` directly would become silent prompt corruption (`references/companion-usage.md §3`). Only the config.toml `model_reasoning_effort` key reaches the review path.
-2. **Consistency + persistence.** `--model` IS honored as a flag in v1.0.4 (`startThread({ model })`, `lib/codex.mjs:56-66`), but routing it through config.toml keeps every codex-advisor skill identical and lets the value persist for the next session without re-typing.
+1. **`--effort` is not a registered review flag** (`handleReviewCommand` `valueOptions = ["base", "scope", "model", "cwd"]` at `:714`). Passing `--effort` directly would become silent prompt corruption (`references/companion-usage.md §3`). Only the config.toml `model_reasoning_effort` key reaches the review path.
+2. **Consistency + persistence.** `--model` IS honored as a flag in v1.0.4+ (`startThread({ model })`, `lib/codex.mjs:1010-1015`), but routing it through config.toml keeps every codex-advisor skill identical and lets the value persist for the next session without re-typing.
 
 Rules:
 
-- **Meta-instructions addressed to YOU** ("분석 먼저 하지마", "한국어로", "빨리", "thoroughly") → obey for your own behavior, never forward to the companion.
+- **Meta-instructions addressed to YOU** (e.g. "don't analyze first", "in Korean", "quickly", "thoroughly" — often typed in the user's own language) → obey for your own behavior, never forward to the companion.
 - **Junk, emoji, trailing punctuation** → drop. Strip trailing `,` `.` `)` from flag values (e.g., `--base develop,` → `base=develop`).
 - **Focus text detected** (any natural-language string not addressed to you and not a whitelisted flag) → use `AskUserQuestion` to offer the adversarial redirect: "This looks like focus text — use `/codex-adversarial <focus>` instead? The built-in review rejects focus text at `codex-companion.mjs:272-273`." Do NOT pass focus text to the companion.
 - **Unknown flag** (e.g., `--commit`, `--uncommitted`, `--wait`, `--foo`) → `AskUserQuestion` to clarify. Common corrections:
@@ -83,7 +83,7 @@ If the user passed *neither* flag, still call the script with two empty strings 
 **Before Phase 2, also print the Parsed line:**
 
 ```
-Parsed: base=develop, scope=auto   (meta: "분석 먼저 하지마" obeyed)
+Parsed: base=develop, scope=auto   (meta: "don't analyze first" obeyed)
 ```
 
 Order: apply-codex-config.py output first, Parsed line second.

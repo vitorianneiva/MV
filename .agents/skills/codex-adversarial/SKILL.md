@@ -1,6 +1,6 @@
 ---
 name: codex-adversarial
-description: "Run Codex adversarial review — actively tries to break confidence in the change. Use when asked \"adversarial review\", \"적대적 리뷰\", or wants thorough security/correctness challenge."
+description: "Run Codex adversarial review — actively tries to break confidence in the change. Use when asked \"adversarial review\", \"red-team this change\", or wants thorough security/correctness challenge."
 argument-hint: "[--base BRANCH] [--scope auto|working-tree|branch] [--model SLUG] [--effort LEVEL] [--no-preview] [focus text]"
 allowed-tools: ["Bash", "BashOutput", "KillShell", "Read", "Grep", "Glob", "AskUserQuestion"]
 ---
@@ -26,7 +26,7 @@ even more than usual.
 
 The companion collects the diff itself. Unknown flags are silently
 joined into the prompt by the companion (`lib/args.mjs:47-49` +
-`:613-619`). Phase 1 whitelist is the only safety net.
+`:643-650`). Phase 1 whitelist is the only safety net.
 
 ---
 
@@ -37,12 +37,12 @@ You are a translator. Use LM intelligence, not regex tables.
 **Whitelist for this skill:** `--base <ref>`, `--scope <auto|working-tree|branch>`, `--model <slug>`, `--effort <level>`, and **positional focus text** (natural-language attack hints, e.g., "check for SQL injection in login handler").
 
 `--model` and `--effort` route through `scripts/apply-codex-config.py` to update `~/.codex/config.toml` before the companion launches. Two reasons:
-1. **`--effort` is not a registered review flag** (`handleReviewCommand` `valueOptions = ["base", "scope", "model", "cwd"]` at `:684`). Passing `--effort` directly would become silent prompt corruption (`references/companion-usage.md §3`). Only the config.toml `model_reasoning_effort` key reaches the review path.
-2. **Consistency + persistence.** `--model` IS honored as a flag in v1.0.4 (`startThread({ model })`, `lib/codex.mjs:56-66`), but routing it through config.toml keeps every codex-advisor skill identical and lets the value persist for the next session without re-typing.
+1. **`--effort` is not a registered review flag** (`handleReviewCommand` `valueOptions = ["base", "scope", "model", "cwd"]` at `:714`). Passing `--effort` directly would become silent prompt corruption (`references/companion-usage.md §3`). Only the config.toml `model_reasoning_effort` key reaches the review path.
+2. **Consistency + persistence.** `--model` IS honored as a flag in v1.0.4+ (`startThread({ model })`, `lib/codex.mjs:1010-1015`), but routing it through config.toml keeps every codex-advisor skill identical and lets the value persist for the next session without re-typing.
 
 Rules:
 
-- **Meta-instructions addressed to YOU** ("한국어로", "빨리", "thoroughly") → obey for your own behavior, never forward.
+- **Meta-instructions addressed to YOU** (e.g. "in Korean", "quickly", "thoroughly" — often typed in the user's own language) → obey for your own behavior, never forward.
 - **Junk, emoji, trailing punctuation on flag values** → drop (`--base develop,` → `base=develop`).
 - **Focus text** — unlike `/codex-review`, adversarial DOES accept it. Collect all non-flag, non-meta tokens and join with spaces. This becomes the positional prompt passed after the flags. Never embed meta-instructions in the focus text.
 - **Unknown flag** (e.g., `--commit`, `--uncommitted`, `--wait`, `--foo`) → `AskUserQuestion` to clarify. Common corrections:
@@ -80,7 +80,7 @@ If neither flag was provided, still call with two empty strings so the user sees
 **Before Phase 2, also print the Parsed line:**
 
 ```
-Parsed: base=develop, scope=auto, focus="check SQL injection in login"   (meta: "빨리" obeyed)
+Parsed: base=develop, scope=auto, focus="check SQL injection in login"   (meta: "quickly" obeyed)
 ```
 
 Order: apply-codex-config.py output first, Parsed line second.
@@ -117,7 +117,7 @@ Omit lines for flags the user did not provide. If focus text was
 transformed from the user's original input, show both:
 
 ```
-Original: "로그인 핸들러에서 SQL 인젝션 확인해줘"
+Original: "pls look at the login handler for sql injection stuff"
 → focus: "check SQL injection in login handler"
 ```
 
@@ -143,7 +143,7 @@ Use `AskUserQuestion` exactly once:
 
 ## Phase 2: Invoke (Pattern A — Bash run_in_background)
 
-Adversarial shares `handleReviewCommand` with `review` (`:725, :992-1003`), so
+Adversarial shares `handleReviewCommand` with `review` (`:755, :1035-1049`), so
 `--background` / `--wait` are silent no-ops. Use Bash
 `run_in_background=true`.
 

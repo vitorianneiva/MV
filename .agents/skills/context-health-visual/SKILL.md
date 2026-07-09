@@ -5,8 +5,8 @@ description: >
   trigger collisions, hooks, MCP, plugins, CLAUDE.md, memory, and skill-security scan.
   Use when asked to audit the environment, check context budget, review plugins,
   or scan installed skills for risky patterns.
-argument-hint: "[--format html|md] [--lang <code>] [--paste-context] [--use-instructions-loaded-hook]"
-allowed-tools: Read, Glob, Grep, Agent, AskUserQuestion, Bash(node *), Bash(open *), Bash(rm -rf /tmp/env-health-*)
+argument-hint: "[--format html|md] [--lang <code>] [--paste-context] [--use-instructions-loaded-hook] [--artifact (native design + publish)]"
+allowed-tools: Read, Glob, Grep, Agent, AskUserQuestion, Artifact, Skill(artifact-design), Bash(node *), Bash(open *), Bash(rm -rf /tmp/env-health-*)
 ---
 
 # Environment Health
@@ -29,6 +29,14 @@ Parse these arguments:
 | `--lang` | ISO code (`en`, `ko`, `fr`, etc.) | detected | Report language. Falls back to detecting the user message language, then `en` |
 | `--paste-context` | (flag) | off | Ask the user to paste their `/context` output and use it to correct the estimated startup load |
 | `--use-instructions-loaded-hook` | (flag) | off | Guide the user through temporarily enabling the `InstructionsLoaded` hook for file-level ground-truth data, then offer to revert it |
+| `--artifact` | (flag) | off | Publish the `html` dashboard as a claude.ai Artifact instead of a local file — see "HTML mode — Artifact channel" below. Also triggers on natural-language equivalents ("as an artifact", "publish as a link", "share as a URL") in whatever language the user is writing in. Applies to `--format html` only — combined with `--format md` it's ignored and the normal markdown path runs (same html-only scope doc-visual and diff-visual established for their artifact channels) |
+
+**Config precedence.** Before falling back to the defaults above, check stored preferences once:
+`node ${CLAUDE_PLUGIN_ROOT}/scripts/config.js get` (prints the config as JSON, or `{}`). A
+`default_format` value replaces the `html` default, and `artifact: true` replaces off, the same as
+the `--artifact` flag. Anything the user actually says this turn — a literal flag or a
+natural-language equivalent — always overrides config; config only fills in when the request is
+silent on format/channel.
 
 ### Phase 1 — Data Collection
 
@@ -148,7 +156,10 @@ Mermaid diagrams follow the design system references: semantic-tokens.md (tokens
 
 **Markdown mode (`--format md`):**
 
-Emit an inline markdown report with this structure:
+Emit an inline markdown report, and save the same content to
+`${CLAUDE_PLUGIN_DATA}/reports/<scan_date>-context-health-visual.md` — the chat text is the
+delivery, the file is the record that lets report-manager list and refine this report later.
+Use this structure:
 
 ```
 # Environment Health — <scan_date>
@@ -218,6 +229,8 @@ Output path: `${CLAUDE_PLUGIN_DATA}/reports/<scan_date>-context-health-visual.ht
 
 Include a header with: graded tally (N 🟢 / N 🟡 / N 🔴), top lever (one sentence), estimated startup load.
 
+While shaping the dashboard, watch for seven authoring reflexes that pass every mechanical gate and still flatten the output — summary-leak (a KPI label where the actual number/finding belongs), linear dump (sections stacked at equal weight with no proportion), forced diagram (a quadrant or timeline on data a table conveys better), generic label (a panel titled "Section 3" instead of what it diagnoses), uniform density (every status panel the same visual weight), empty decoration (a callout or icon carrying no signal), and accent overuse (more than 1–2 focal points per view). Read `${CLAUDE_PLUGIN_ROOT}/references/design-system/anti-slop-tells.md` for the full catalogue. They're named defaults to break, not design rules: layout and which area leads stay yours — the catalogue just flags the habits worth resisting.
+
 **Diagrams**: Read these reference files for implementation:
 - `${CLAUDE_PLUGIN_ROOT}/references/design-system/mermaid-patterns.md` — Mermaid syntax, theming, dark mode
 - `${CLAUDE_PLUGIN_ROOT}/references/design-system/semantic-tokens.md` — Color/font roles, Mermaid themeVariables
@@ -244,9 +257,107 @@ node ${CLAUDE_PLUGIN_ROOT}/scripts/artifact-gate.js <output-path>
 ```
 If violations found: fix inline, max 2 retries.
 
+**Visual self-audit (HTML only)**
+
+The gate reads the HTML as *text* — it never sees the rendered dashboard. A quadrant or timeline can pass the density check and still render as an unreadable tangle; a long skill name or finding can clip at a panel edge; a graded tally that reads fine in source can flatten into a uniform grid of identical cards once styled. After the gate passes, **render the dashboard and look at it** before delivering:
+
+```bash
+node ${CLAUDE_PLUGIN_ROOT}/scripts/render-report.js <output-path>
+```
+
+On success it prints a PNG path. **Read that PNG** (you read images multimodally) and scan it for what the text gate can't judge:
+
+- **Density** — is any section a uniform wall of KPI cards or a table past its budget, or a diagram too dense to read?
+- **Hierarchy** — does the section you judged load-bearing draw the eye first, or are all 10 sections the same weight? (see *uniform density* / *accent overuse* in anti-slop-tells.md)
+- **Diagram integrity** — did a Mermaid quadrant/timeline/status diagram render as raw `<pre>` text or as crossing/overlapping edges?
+- **Overflow** — does a panel, table, long skill name, or collision pair run past its container or off the page?
+
+Fix what you see and re-render. **Cap at 2 audit passes** — if something still looks off after the second, ship with a one-line note to the user rather than looping. This catches gross breakage, not pixel-perfection.
+
+**If Chrome is absent**, `render-report.js` exits `1` (non-zero). Skip the audit and tell the user it was skipped (e.g. "rendered-image check skipped: Chrome not found — set `CHROME_BIN` or install Chrome"). The report already passed the gate; the visual pass is an enhancement and **never blocks delivery**.
+
+Full procedure, limits (fixed-height clipping, downscaling, render cost), and the rationale for *not* mechanizing this with a measurement script live in `${CLAUDE_PLUGIN_ROOT}/references/design-system/visual-self-audit.md`.
+
 Then run `open <output-path>`.
 
-**Privacy guard (both modes):** strip any raw file content before rendering. The
+**HTML mode — Artifact channel (`--artifact`)**
+
+Same content decisions as the default HTML mode above (10-section dashboard structure,
+graded/observational split, header tally + top lever, anti-slop-tells) — only the page's shape
+and delivery mechanism change, because it ships inside Claude Code's official Artifacts feature
+instead of as a local file.
+
+**Before writing anything**, load the built-in `artifact-design` skill (Skill tool, skill name
+`artifact-design`). This is a tool contract MUST, not a suggestion — it conditions you for the CSP
+sandbox this page runs in, and skipping it is how a page ends up broken on publish.
+
+Then write the page as a **fragment**, not a full document:
+- No `<!DOCTYPE>`, `<html>`, `<head>`, or `<body>` tags — content only, starting from your first
+  real element. The Artifact tool wraps the file in that skeleton at publish time.
+- Set a concise `<title>` directly in the content — it names the artifact in the browser tab. Keep
+  it stable across every republish of the same scan in this session.
+- **Zero external requests** — the Artifact viewer's CSP blocks all of them. No Mermaid CDN
+  `<script>`, no hotlinked images or fonts. Quadrant/timeline/status diagrams become inline SVG or
+  HTML+CSS layouts instead (follow the artifact-design skill's guidance) — same diagram-type
+  decision from `diagram-type-selection.md`, different rendering technique. `mermaid-patterns.md`'s
+  CDN setup and `classDef` rules don't apply here.
+- Support both themes: `@media (prefers-color-scheme: dark)` as the default signal, plus
+  `:root[data-theme="dark"]` / `:root[data-theme="light"]` overrides — the artifact viewer's theme
+  toggle stamps `data-theme` on the root and it must win in both directions.
+
+**Watch KPI-card density here in particular** — 10 diagnostic sections (6 graded + 4
+observational) packed into a narrower fragment than the local dashboard's full-width layout is the
+likeliest place a card grid wraps awkwardly or a long finding/skill-name string clips. This is
+exactly what this slice's local-vs-artifact comparison run is for (see the issue's S4 acceptance
+criteria), not something to assume away here.
+
+Save the fragment to
+`${CLAUDE_PLUGIN_DATA}/reports/<scan_date>-context-health-visual.artifact.html` — a distinct
+filename from the default channel's `<scan_date>-context-health-visual.html`, so the two never
+collide or overwrite each other for the same scan.
+
+Re-running this skill within the same conversation reuses that same path (as long as `scan_date`
+is unchanged). Publishing to the same `file_path` again redeploys to the same URL instead of
+minting a new one, so keep the `<title>` and `favicon` identical across those republishes (the
+tool reads a changed favicon as a different page). If `${output-path}.artifact.json` already
+exists from an earlier publish this session, read it first and reuse its `title`/`favicon`
+verbatim.
+
+**Validation**: run the gate in content-only mode instead of the full check:
+```bash
+node ${CLAUDE_PLUGIN_ROOT}/scripts/artifact-gate.js <output-path> --content-only
+```
+This checks only missing images, raw markdown leakage, anchor hrefs, image alt, and placeholders —
+the facts that must survive regardless of who designed the page. Density/classDef/palette checks
+don't apply: the built-in artifact-design skill owns the design layer on this channel (ADR 0007).
+
+**Skip the visual self-audit (`render-report.js`) entirely on this channel.** The rendered picture
+is the built-in artifact-design skill's responsibility here, not this skill's — there's no local
+Chrome render loop to run before publishing.
+
+**The privacy guard below still applies unchanged** — the pre-render strip of raw content fields
+runs before writing the fragment exactly as it does for the default HTML and markdown channels.
+Publishing to claude.ai doesn't change what's safe to include; it only changes the CSS/CDN
+mechanics around it.
+
+**Publish**, once the gate passes:
+1. Publish with the `Artifact` tool: `file_path` = the fragment you saved, `favicon` = one or two
+   emoji fitting a health/diagnostic theme (reused unchanged if a sidecar from this session already
+   set one — see above), `description` = one sentence naming the scan date and top lever.
+2. Record the publish so a later refine (even across sessions, once that lands) can find this URL:
+   ```bash
+   node ${CLAUDE_PLUGIN_ROOT}/scripts/write-artifact-sidecar.js --report <output-path> --url <artifact-url> --title <title> --favicon <favicon>
+   ```
+3. Report the URL to the user with one line noting the design delegation — e.g. "Design delegated
+   to Claude's built-in Artifact renderer — this differs from the local dashboard's look." (phrase
+   it in whatever language you're already replying in).
+
+**Fallback** — if the `Artifact` tool is unavailable or the publish call fails: keep the local
+fragment you already saved, `open` it as the default HTML channel does, and state the fallback in
+one generic line (e.g. "Artifact publish unavailable — opened the local file instead."). Don't
+guess at the specific cause, and don't ask before falling back.
+
+**Privacy guard (all channels):** strip any raw file content before rendering. The
 report emits counts, sizes, line numbers, and file paths — never CLAUDE.md body text,
 MEMORY.md body text, API keys, or arbitrary file contents. Enforce this as a
 pre-render pass: walk the sections-data.json tree and remove any field named `body`,
@@ -393,3 +504,5 @@ Read these as needed (not upfront):
 | `${CLAUDE_PLUGIN_ROOT}/references/design-system/semantic-tokens.md` | When setting up CSS/Mermaid theme |
 | `${CLAUDE_PLUGIN_ROOT}/references/design-system/diagram-type-selection.md` | When deciding diagram type |
 | `${CLAUDE_PLUGIN_ROOT}/references/design-system/diagram-density-rules.md` | When a diagram feels complex |
+| `${CLAUDE_PLUGIN_ROOT}/references/design-system/anti-slop-tells.md` | While shaping content — to check you're not falling into a behavioral-slop reflex |
+| `${CLAUDE_PLUGIN_ROOT}/references/design-system/visual-self-audit.md` | After the gate passes — the render-and-look loop (full procedure) |

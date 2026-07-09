@@ -55,83 +55,95 @@
       "skillPath": "plugins/claw-mux/skills/cmux-markdown/SKILL.md",
       "computedHash": "86da36cbe32a53fa207c6ecd9555d95d7a05d68ebd2a63fe1d55e7d5598c8e18"
     },
+    "coach": {
+      "source": "LeeJuOh/claude-code-zero",
+      "sourceType": "github",
+      "skillPath": "plugins/rubber-duck-tutor/skills/coach/SKILL.md",
+      "computedHash": "89890db5eff0550ee3eb6d9f7c8c78b1be6408d0117b35a0888b4f44825102e8"
+    },
     "codex-adversarial": {
       "source": "LeeJuOh/claude-code-zero",
       "sourceType": "github",
       "skillPath": "plugins/codex-advisor/skills/codex-adversarial/SKILL.md",
-      "computedHash": "a9e1e1d4d458b33882d3770d5b7675f578914dc1969851004fd88bba7abf6aac"
+      "computedHash": "926b12b47c7ebda2c1bcfa328dd0954623646bc882474a3716677804be8d7a3f"
     },
     "codex-cancel": {
       "source": "LeeJuOh/claude-code-zero",
       "sourceType": "github",
       "skillPath": "plugins/codex-advisor/skills/codex-cancel/SKILL.md",
-      "computedHash": "8fa7aea6cfbd5e7ac096e8c3522e2c373acb5a438db1ace9c08c18a899467ac5"
+      "computedHash": "fe3bb9346616883d161e4b33f2d9e6408308dd66cc6902031a8f02d89e59d391"
     },
     "codex-rescue": {
       "source": "LeeJuOh/claude-code-zero",
       "sourceType": "github",
       "skillPath": "plugins/codex-advisor/skills/codex-rescue/SKILL.md",
-      "computedHash": "b111488e9e95ac5265f898d3043a7d4924e885f3a3bebcf5de70d088b03d5bb3"
+      "computedHash": "a90b6659233e987e279409975ad440fe970cdefdb24fa4b6bf559b6be6e9b694"
     },
     "codex-research": {
       "source": "LeeJuOh/claude-code-zero",
       "sourceType": "github",
       "skillPath": "plugins/codex-advisor/skills/codex-research/SKILL.md",
-      "computedHash": "ae7a45f0d85019b64f1ce4644fd5bb1c97e3d212adf97790a49e8a5f757c7ff9"
+      "computedHash": "d94b9a3a9d34330576822f84b2e44f45fdffc138c9186983afdbf840c21f04e3"
     },
     "codex-result": {
       "source": "LeeJuOh/claude-code-zero",
       "sourceType": "github",
       "skillPath": "plugins/codex-advisor/skills/codex-result/SKILL.md",
-      "computedHash": "c012f2e9fd355a28da45ba8ce00cf774e9d73986e3d22dca6ba61ef42364fa86"
+      "computedHash": "765302c22f47bb55bd8177ca7687222b41549b615fc2b094f472c1223ea7ec97"
     },
     "codex-review": {
       "source": "LeeJuOh/claude-code-zero",
       "sourceType": "github",
       "skillPath": "plugins/codex-advisor/skills/codex-review/SKILL.md",
-      "computedHash": "c1e78970a12521be85614fcb4a378c87b588d68c7c61c20b0ce9a1107345505b"
+      "computedHash": "ab59fd0bfca8699b62ee0ef102c5f25ebd98359257de169b8258729f0017ca3a"
     },
     "codex-setup": {
       "source": "LeeJuOh/claude-code-zero",
       "sourceType": "github",
       "skillPath": "plugins/codex-advisor/skills/codex-setup/SKILL.md",
-      "computedHash": "b4263569c23991c92652f9f18903126a498604d3cc856da993a542a54fe05c3e"
+      "computedHash": "82d42d808d50490f94951f40b98e8e623025473766f7274c7d977754bfb68d7a"
     },
     "codex-status": {
       "source": "LeeJuOh/claude-code-zero",
       "sourceType": "github",
       "skillPath": "plugins/codex-advisor/skills/codex-status/SKILL.md",
-      "computedHash": "51bc484ede5f7db345997d7074f57350cb1e826f41d62496692c71991c8fc7f9"
+      "computedHash": "f406c7eeb544c4484821e9c98a8d776a9f53082ccafa3975fd45c3fd141f4810"
+    },
+    "codex-transfer": {
+      "source": "LeeJuOh/claude-code-zero",
+      "sourceType": "github",
+      "skillPath": "plugins/codex-advisor/skills/codex-transfer/SKILL.md",
+      "computedHash": "894fbe74f56411ac0c380a1e5218b494d1163d8f43d08a5b66ead3c621b50991"
     },
     "codex-verify": {
       "source": "LeeJuOh/claude-code-zero",
       "sourceType": "github",
       "skillPath": "plugins/codex-advisor/skills/codex-verify/SKILL.md",
-      "computedHash": "8097fc53522ff97713dd55f9dc35bdd8e0673bf824ea412c0f88643199a054b2"
+      "computedHash": "593f41305a0b49965e6a8b090d6a1375f3c6e528f3a7f49b3215c95146f50211"
     },
     "context-health-visual": {
       "source": "LeeJuOh/claude-code-zero",
       "sourceType": "github",
       "skillPath": "plugins/vision-powers/skills/context-health-visual/SKILL.md",
-      "computedHash": "fd7963c5b301108f0d7b632a103f51bcdb2d4853161e097261037a7c34b41780"
+      "computedHash": "0effc051f15db1a4d94cdc46771e444fc7b3a67b78bdf06b7500ec502d71b969"
     },
     "diff-visual": {
       "source": "LeeJuOh/claude-code-zero",
       "sourceType": "github",
       "skillPath": "plugins/vision-powers/skills/diff-visual/SKILL.md",
-      "computedHash": "6284ff584f371acfbf46966f5c7777b8256af646fc0ed14488d5aad8a2b8037b"
+      "computedHash": "98f2f8dff5f8b683c508af7a13da13567e642d6dbe643f2581ad6b4f80e3b017"
     },
     "doc-visual": {
       "source": "LeeJuOh/claude-code-zero",
       "sourceType": "github",
       "skillPath": "plugins/vision-powers/skills/doc-visual/SKILL.md",
-      "computedHash": "0d775af73f24b0dfa82c7e6b21f116817ebc0153eea223ac114ea1986ba94499"
+      "computedHash": "9d312e492cc8d5bf6ecabe932b301d707cf8105e164bad48463e8d9144dd1b65"
     },
     "duck": {
       "source": "LeeJuOh/claude-code-zero",
       "sourceType": "github",
       "skillPath": "plugins/rubber-duck-tutor/skills/duck/SKILL.md",
-      "computedHash": "e2d6f06784464cc57b08451a2bc7c3c9aea2f2e2e52a85d6b4165e311b162181"
+      "computedHash": "50c94b0a3b0bb532b94187c1021d8af51384e734f3eb533ff60596c91e8e2def"
     },
     "duck-design": {
       "source": "LeeJuOh/claude-code-zero",
@@ -143,7 +155,7 @@
       "source": "LeeJuOh/claude-code-zero",
       "sourceType": "github",
       "skillPath": "plugins/rubber-duck-tutor/skills/duck-orient/SKILL.md",
-      "computedHash": "28c39a908908f2c0b5952bce35c45715b85ffe2c30fefd57b509a1c3ebbd3a71"
+      "computedHash": "d38f0e031a818a9cef5822279f670970d4c883dfe8a52cfc5b8f9c0659259045"
     },
     "duck-plan": {
       "source": "LeeJuOh/claude-code-zero",
@@ -151,17 +163,23 @@
       "skillPath": "plugins/rubber-duck-tutor/skills/duck-plan/SKILL.md",
       "computedHash": "c62b0c15dacd30b8edbaa5b7554c0c949d98b0206de73f52d95264a0bdd841dd"
     },
+    "duck-prebuild": {
+      "source": "LeeJuOh/claude-code-zero",
+      "sourceType": "github",
+      "skillPath": "plugins/rubber-duck-tutor/skills/duck-prebuild/SKILL.md",
+      "computedHash": "9fd4caa0274dda6d54138db13689bfbf113a8f6725bad1eb6e34876817fffc63"
+    },
     "duck-review": {
       "source": "LeeJuOh/claude-code-zero",
       "sourceType": "github",
       "skillPath": "plugins/rubber-duck-tutor/skills/duck-review/SKILL.md",
-      "computedHash": "90a97f223b165a8a4c7784cd9d6e27970831a56c1077be19a71332e7e4be0096"
+      "computedHash": "484f213ef734fde9b5d67020986ed9b355d39e0bf4c10f20fb6f3532495ba618"
     },
     "duck-verify": {
       "source": "LeeJuOh/claude-code-zero",
       "sourceType": "github",
       "skillPath": "plugins/rubber-duck-tutor/skills/duck-verify/SKILL.md",
-      "computedHash": "e0f860e40fef8baddc809cfa0aae3a8d21102155da53386ea534627807fd0bb4"
+      "computedHash": "db13b324fd4fff9ce063897484a3e769446eed64b1d728ab9ff24391f682e3bd"
     },
     "e2e-test": {
       "source": "LeeJuOh/claude-code-zero",
@@ -173,7 +191,7 @@
       "source": "LeeJuOh/claude-code-zero",
       "sourceType": "github",
       "skillPath": "plugins/vision-powers/skills/fact-check/SKILL.md",
-      "computedHash": "ab69ecb73911af8412b1f6b87408c7306ffb705d59726d3f50ab54a1ad853b84"
+      "computedHash": "86f4bd7c1ab38ba7f382b5e4f897433078088e389ba1196280cc947f69799b50"
     },
     "fetch-sitemap": {
       "source": "LeeJuOh/claude-code-zero",
@@ -191,7 +209,7 @@
       "source": "LeeJuOh/claude-code-zero",
       "sourceType": "github",
       "skillPath": "plugins/toolbox/skills/handoff/SKILL.md",
-      "computedHash": "f1a716ef1029de534ea18115957d9b3d1c3ff29dd07d438299f0cbdbbe727bde"
+      "computedHash": "276daeac97d078adc7d1c7d6a57e8b6a91047580f4e2a09aedfb48c80fd0d26e"
     },
     "notebooklm-manager": {
       "source": "LeeJuOh/claude-code-zero",
@@ -203,13 +221,13 @@
       "source": "LeeJuOh/claude-code-zero",
       "sourceType": "github",
       "skillPath": "plugins/vision-powers/skills/plugin-visual/SKILL.md",
-      "computedHash": "d02b87516d70fa7d44d780bcb47baf39ccd270d6353369d30cd0b1105412a2c5"
+      "computedHash": "a36136e88ce89218520471bd98bc17cc140d9e38cbd8c32eb77bb33c66ec492e"
     },
     "report-manager": {
       "source": "LeeJuOh/claude-code-zero",
       "sourceType": "github",
       "skillPath": "plugins/vision-powers/skills/report-manager/SKILL.md",
-      "computedHash": "62eb972fb93fade312a5b9a006e66c2d5fe3fd7572bc3e77e77bc988ff46b810"
+      "computedHash": "e369a61e5c3a130bea0d282ddcef7e8d82c9304060d043fc5eebaf531ea69e6d"
     },
     "secret-setup": {
       "source": "LeeJuOh/claude-code-zero",
@@ -227,7 +245,7 @@
       "source": "LeeJuOh/claude-code-zero",
       "sourceType": "github",
       "skillPath": "plugins/skill-creator-pro/skills/skill-creator-pro/SKILL.md",
-      "computedHash": "8f16725e5a1fb5aacbc19a72d8ec04dc9a09ebbcee2605362adc2a1559623825"
+      "computedHash": "8929e310d4978f236b1417eb275c74c19d05822ac7b3ab0d2228559fafe67331"
     },
     "sync-references": {
       "source": "LeeJuOh/claude-code-zero",
